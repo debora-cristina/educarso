@@ -58,42 +58,7 @@ $(function() {
 });
 
 var count = 0;
-$(document)
-		.ready(
-				function() {
-					var max_fields = 10; // maximum input boxes allowed
-					var wrapper = $(".input_fields_wrap"); // Fields wrapper
-					var add_button = $(".add_field_button"); // Add button ID
 
-					var x = 1; // initlal text box count
-					$(add_button)
-							.click(
-									function(e) { // on add input button click
-										e.preventDefault();
-										if (x < max_fields) { // max input box
-											// allowed
-											x++; // text box increment
-											count++;
-											$(wrapper)
-													.append(
-															'<div>Nome do Processo<input id="id'
-																	+ count
-																	+ '" type="text" name="mytext[]"/>Tempo Chegada<input type="text" name="mytext[]"/>Tempo CPU<input type="text" name="mytext[]"/><a href="#" class="remove_field">Remove</a></div>'); // add
-											// input
-											// box
-										}
-									});
-
-					$(wrapper).on("click", ".remove_field", function(e) { // user
-						// click
-						// on
-						// remove
-						// text
-						e.preventDefault();
-						$(this).parent('div').remove();
-						x--;
-					})
-				});
 function isEmpty(obj) {
 	for ( var prop in obj) {
 		if (obj.hasOwnProperty(prop))
@@ -126,9 +91,9 @@ function desenhaTabela(dados) {
 
 	$(".js-books-table-body tr").remove();
 	str = JSON.stringify(dados);
-	str = JSON.stringify(dados, null, 4); // (Optional) beautiful indented
+	str = JSON.stringify(dados, null, 4);
 	// output.
-	console.log(str); // Logs output to dev tools console.
+	console.log(str); 
 	var response = JSON.parse(str);
 
 	var datajson = JSON.parse(str);
@@ -148,28 +113,6 @@ function desenhaTabela(dados) {
 	for (var i = 0; i < keyArr.length; i++) {
 		var val = datajson[keyArr[i]];
 		
-		if (val.processos.EXECUTANDO != null) {
-			
-			processosExecutando.push(val.processos.EXECUTANDO);
-
-			for ( var key in val.processos.EXECUTANDO) {
-				var obj = val.processos.EXECUTANDO[key];
-				exec = val.processos.EXECUTANDO;
-			}
-			
-			var nome = "" + obj.nomeProcesso + "";
-			if (!isin(nome, nomesProcessos)) {
-				nomesProcessos.push({
-					"nomeProcesso" : obj.nomeProcesso,
-					"posicao" : posicao
-				});
-
-				posicao = posicao + 1;
-			}
-
-			processosExecutando = [];
-		}
-			
 		if (val.processos.PRONTO != null ) {
 
 			processosExecutando.push(val.processos.PRONTO);
@@ -192,21 +135,38 @@ function desenhaTabela(dados) {
 			processosExecutando = [];
 		}
 		
-		
+		if (val.processos.EXECUTANDO != null) {
+			
+			processosExecutando.push(val.processos.EXECUTANDO);
+
+			for ( var key in val.processos.EXECUTANDO) {
+				var obj = val.processos.EXECUTANDO[key];
+				exec = val.processos.EXECUTANDO;
+			}
+			
+			var nome = "" + obj.nomeProcesso + "";
+			if (!isin(nome, nomesProcessos)) {
+				nomesProcessos.push({
+					"nomeProcesso" : obj.nomeProcesso,
+					"posicao" : posicao
+				});
+
+				posicao = posicao + 1;
+			}
+
+			processosExecutando = [];
+		}		
 	}
 	
 	nomesProcessos.sort(function(a,b) {
 	    return a.nomeProcesso < b.nomeProcesso ? -1 : a.nomeProcesso > b.nomeProcesso ? 1 : 0;
 	});
 	
-	//console.log(processosExecutando);
-
 	var grd = ctx.createLinearGradient(0, 0, processosExecutando.length * 100,
 			0);
 	grd.addColorStop(0, "red");
 	grd.addColorStop(1, "white");
 
-	//console.log(nomesProcessos);
 	var exec = [];
 	var fin = [];
 	var posNome = 70;
@@ -219,19 +179,18 @@ function desenhaTabela(dados) {
 	}
 
 	var posYProcesso = 0;
+	var tempoAnterior =0;
 	for (var i = 0; i < keyArr.length; i++) {
 		var val = datajson[keyArr[i]];
-		console.log(val.tempo);
-		// console.log(val.processos.EXECUTANDO)
 
 		ctx.font = "12px Arial";
 		ctx.fillStyle = "black";
 		ctx.textAlign = "center";
 
-		ctx.fillText(val.tempo, xPos + 20, 20);
+		ctx.fillText(tempoAnterior, xPos + 20, 20);
+		tempoAnterior = tempoAnterior+1;
 		for (var j = 0; j < nomesProcessos.length; j++) {
 			ctx.rect(xPos, (nomesProcessos[j].posicao * 40) + 40, 40, 40);
-			//console.log(nomesProcessos[j].posicao);
 			ctx.stroke();
 		}
 
@@ -241,9 +200,6 @@ function desenhaTabela(dados) {
 			for ( var key in val.processos.PRONTO) {
 				var obj = val.processos.PRONTO[key];
 				exec = val.processos.PRONTO;
-
-				// console.log("exec" + obj.nomeProcesso + " tempo" +
-				// val.tempo);
 				ctx.fillStyle = "blue";
 				for (var k = 0; k < nomesProcessos.length; k++) {
 					if (obj.nomeProcesso == nomesProcessos[k].nomeProcesso) {
@@ -260,9 +216,6 @@ function desenhaTabela(dados) {
 					for ( var key in val.processos.EXECUTANDO) {
 						var obj = val.processos.EXECUTANDO[key];
 						exec = val.processos.EXECUTANDO;
-
-						//console.log("exec" + obj.nomeProcesso + " tempo" +
-						// val.tempo);
 						ctx.fillStyle = "yellow";
 						for (var k = 0; k < nomesProcessos.length; k++) {
 							if (obj.nomeProcesso == nomesProcessos[k].nomeProcesso) {

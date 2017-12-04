@@ -11,9 +11,6 @@ import com.educarso.simulador.view.MapaProcessos;
 
 public class Prioridade extends PoliticaImpl implements IPolitica {
 
-	private int tempo = 0;
-	private int posicao = 0;
-	private boolean troca = false;
 	private int indice = 0;
 	private boolean escalonar = true;
 
@@ -22,39 +19,31 @@ public class Prioridade extends PoliticaImpl implements IPolitica {
 
 		indice = 0;
 		setPosicao(0);
-		
-		if(getFila().size() == 1){
-			setPosicao(0);
-			
-		} else{
-			for (int i = 0; i < getFila().size(); i++) {
-	
-				if (getFila().get(i).getEstado() != Estado.ENCERRADO) {
-					
-					if (indice == getFila().size() - 1) {
-						indice = i;
-					} else {
-						indice++;
+		for (int i = 0; i < getFila().size(); i++) {
+
+			if (getFila().get(i).getEstado() != Estado.ENCERRADO) {
+				if (indice == getFila().size() - 1) {
+					indice = i;
+				} else {
+					indice++;
+				}
+
+				if (getFila().get(indice).getEstado() != Estado.ENCERRADO && getFila().get(i).getEstado() != Estado.ENCERRADO) {
+					if (getFila().get(i).getTempoChegada() <= getTempo()
+							&& getFila().get(i).getPrioridade() <= getFila().get(indice).getPrioridade()) {
+						setPosicao(i);
+					} else if (getFila().get(indice).getTempoChegada() <= getTempo()
+							&& getFila().get(indice).getPrioridade() < getFila().get(i).getPrioridade()) {
+						getFila().get(getPosicao()).setEstado(Estado.PRONTO);
+						setPosicao(indice);						
 					}
-						if (getFila().get(i).getTempoChegada() <= getTempo()
-								&& getFila().get(i).getPrioridade() <= getFila().get(indice).getPrioridade()) {
-							System.out.println(getTempo() + "EXEC" + getPosicao());
-							setPosicao(i);
-						} else if (getFila().get(indice).getTempoChegada() <= getTempo()
-								&& getFila().get(indice).getPrioridade() < getFila().get(i).getPrioridade()) {
-							getFila().get(getPosicao()).setEstado(Estado.PRONTO);
-							System.out.println(getTempo() + "EXEC- TROCA" + getPosicao());
-							setPosicao(indice);
-							troca = true;
-							
-						}
-	
+
 				}
 			}
-			addProcessoPronto();
-		}		
-
+		}
+		
 		getFila().get(getPosicao()).setEstado(Estado.EXECUTANDO);
+
 	}
 
 	@Override
@@ -66,35 +55,23 @@ public class Prioridade extends PoliticaImpl implements IPolitica {
 		setPosicao(0);
 		setProcesso(filaProcessos.get(0));
 		setConfiguracoes(config);
-		setFila(ordenar(getFila(), 1));
-		addProcessoPronto();
-		getMapaProcessos().add(new MapaProcessos(getTempo(), copia()));
 		int tempoEx;
-		while (escalonar) {
-
-			analisar();
+		while (escalonar) {		
 			
 			if (getFila().get(getPosicao()).getTempoCpu() == getFila().get(getPosicao()).getTempoExecucao()) {
 				getFila().get(getPosicao()).setEstado(Estado.ENCERRADO);
-				getFila().remove(getPosicao());
 				addProcessoFinalizado(getFila().get(getPosicao()).getNomeProcesso(), escalonar);
 				if (analisa(Estado.ENCERRADO) == getFila().size()) {
-
 					escalonar = false;
 					addProcessoFinalizado(getFila().get(getPosicao()).getNomeProcesso(), escalonar);
 				}
-				analisar();
-
 			}
-			
-			addProcessoExecutando(getFila().get(getPosicao()).getNomeProcesso(), escalonar);
-			
-			getMapaProcessos().add(new MapaProcessos(getTempo(), copia()));
-			
+			analisar();
 			tempoEx = getFila().get(getPosicao()).getTempoExecucao() + 1;
-			getFila().get(getPosicao()).setTempoExecucao(tempoEx);
+			getFila().get(getPosicao()).setTempoExecucao(tempoEx);			
+			addProcessoExecutando(getFila().get(getPosicao()).getNomeProcesso(), escalonar);			
+			getMapaProcessos().add(new MapaProcessos(getTempo(), copia()));		
 			setTempo(getTempo() + 1);
-			
 			
 		}
 
