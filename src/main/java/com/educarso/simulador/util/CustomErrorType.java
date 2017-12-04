@@ -1,4 +1,4 @@
-package com.educarso.util;
+package com.educarso.simulador.util;
 
 
 public class CustomErrorType {
