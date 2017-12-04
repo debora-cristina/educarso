@@ -1,4 +1,4 @@
-package com.educarso.simulador;
+package com.educarso.simulador.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,18 +19,10 @@ public class PoliticaImpl extends Escalonador implements IEscalonar {
 
 	 
 	 
-	private Map<Estado, List<Processo>> mapa = new LinkedHashMap<Estado, List<Processo>>();
-	 
-	 
-	private Processo processo = new Processo();
-	 
-	 
-	private List<MapaProcessos> mapaProcessos = new ArrayList<MapaProcessos>();
-	 
-	 
-	private int tempo = 0;
-	 
-	 
+	private Map<Estado, List<Processo>> mapa = new LinkedHashMap<Estado, List<Processo>>();	 
+	private Processo processo = new Processo();	 
+	private List<MapaProcessos> mapaProcessos = new ArrayList<MapaProcessos>();	 
+	private int tempo = 0;	 
 	private int posicao = 0;
 
 	@Override
@@ -63,9 +55,7 @@ public class PoliticaImpl extends Escalonador implements IEscalonar {
 			}
 		}
 
-		mapa.put(Estado.PRONTO, processos);
-
-		
+		mapa.put(Estado.PRONTO, processos);		
 		return getFila();
 
 	}

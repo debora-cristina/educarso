@@ -1,4 +1,4 @@
-package com.educarso.simulador;
+package com.educarso.simulador.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +12,7 @@ import com.educarso.simulador.view.MapaProcessos;
 
 public class FIFO extends PoliticaImpl implements IPolitica {
 
-	private boolean troca = false;
 	private boolean escalonar = true;
-	private int posicao = 0;
 
 	public void analisar() {
 
@@ -41,7 +39,6 @@ public class FIFO extends PoliticaImpl implements IPolitica {
 		while (escalonar) {
 
 			if (getTempo() == tempoProcessamento) {
-				troca = true;
 				addProcessoFinalizado(getFila().get(getPosicao()).getNomeProcesso(), escalonar);
 				analisar();
 				getMapaProcessos().add(new MapaProcessos(getTempo(), copia()));

@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.educarso.simulador.Escalonador;
 import com.educarso.simulador.domain.EscalonadorDomain;
 import com.educarso.simulador.domain.Processo;
+import com.educarso.simulador.model.Escalonador;
 import com.educarso.simulador.view.IPolitica;
 import com.educarso.simulador.view.MapaProcessos;
 import com.wordnik.swagger.annotations.Api;

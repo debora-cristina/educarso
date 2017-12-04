@@ -1,4 +1,4 @@
-package com.educarso.simulador;
+package com.educarso.simulador.model;
 
 import java.util.ArrayList;
 import java.util.List;

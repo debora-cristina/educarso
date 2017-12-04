@@ -1,4 +1,4 @@
-package com.educarso.simulador;
+package com.educarso.simulador.model;
 
 import static springfox.documentation.builders.PathSelectors.regex;
 
@@ -27,12 +27,9 @@ public class SwaggerConfig {
 
 	 @SuppressWarnings("unchecked")
 	private Predicate<String> caminho() {
-	        return or(
-	                regex("/processos.*"),
-	                regex("/escalonador.*"),
-	                regex("/politicas.*")
+	        return or( regex("/processos.*"),regex("/escalonador.*"),regex("/politicas.*")
 	        );
-	    }
+	}
 
 	
 
